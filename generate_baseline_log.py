@@ -2,6 +2,7 @@ import sys
 import csv
 import datetime
 from scipy.stats import wasserstein_distance
+from pathlib import Path  # Added for directory handling
 
 
 class excel_semicolon(csv.excel):
@@ -10,7 +11,7 @@ class excel_semicolon(csv.excel):
 
 def violatesTCloseness(distributionActivity, distributionEquivalenceClass, t):
     maxDifference = max(distributionActivity) - min(distributionActivity)
-    if maxDifference == 0.0: #All annotations have the same value(most likely= 0.0)
+    if maxDifference == 0.0: # All annotations have the same value(most likely= 0.0)
         return False
     if (wasserstein_distance(distributionActivity,distributionEquivalenceClass)/maxDifference) >= t:
         return True
@@ -28,7 +29,11 @@ caseIdColName = "Case ID"
 variantColName = "Variant"
 activityColName = "Activity"
 
-writeFilePath = filePath.replace(".csv","_pretsa_baseline_k%s_t%s.csv" % (kString,tString))
+# Define directory for saving baseline logs
+baseline_log_dir = Path("/content/PRETSA/baselinelogs")
+baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
+
+writeFilePath = baseline_log_dir / Path(filePath).name.replace(".csv","_pretsa_baseline_k%s_t%s.csv" % (kString,tString))
 
 timeStampColName = "Complete Timestamp"
 
