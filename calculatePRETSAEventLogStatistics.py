@@ -9,7 +9,7 @@ df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in range(1,9):
         k = 2**k
-        filePath = dictPath + dataset + "_duration_t1.0_k" + str(k) + "_pretsa.csv"
+        filePath = dictPath + dataset + "_duration_t" + str(k) + "_pretsa.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         variants = set()
         caseId = ""

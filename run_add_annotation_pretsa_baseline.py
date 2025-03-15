@@ -3,7 +3,7 @@ import os
 
 dictPath = sys.argv[1]
 
-datasets = ["CoSeLoG", "Sepsis"]
+datasets = ["CoSeLoG", "Sepsis", "Road_Traffic_Fine_Management_Process"]
 for dataset in datasets:
     print(dataset)
     for k in range(1,9):
