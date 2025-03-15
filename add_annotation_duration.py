@@ -15,11 +15,11 @@ durationColName = "Duration"
 
 # Define the log directory
 log_dir = Path("/content/PRETSA/runlogs")
-log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
+log_dir.mkdir(parents=True, exist_ok=True)
 
 writeFilePath = filePath.replace("/content/PRETSA/baselogs",str(log_dir))
 
-writeFilePath = filePath.replace(".csv","_duration.csv")
+writeFilePath = writeFilePath.replace(".csv","_duration.csv")
 
 print(writeFilePath)
 
