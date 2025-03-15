@@ -8,18 +8,14 @@ class excel_semicolon(csv.excel):
 
 dataset = sys.argv[1]
 filePath = sys.argv[2]
+k = sys.argv[3] 
 
 caseIdColName = "Case ID"
 durationColName = "Duration"
 
 
-# Define the log directory
-log_dir = Path("/content/PRETSA/runlogs")
-log_dir.mkdir(parents=True, exist_ok=True)
-
-writeFilePath = filePath.replace("/content/PRETSA/annotation",str(log_dir))
-
-writeFilePath = writeFilePath.replace(".csv","_duration.csv")
+# Define the output file path
+writeFilePath = f"/content/PRETSA/annotation/{dataset}_duration_pretsa_baseline_k{str(k)}.csv"
 
 print(writeFilePath)
 
