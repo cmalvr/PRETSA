@@ -1,8 +1,6 @@
 import sys
 import subprocess
 
-dictPath = sys.argv[1]
-
 datasets = {
     "CoSeLoG": "/content/PRETSA/baselogs/CoSeLoG_dataset.csv",
     "Sepsis": "/content/PRETSA/baselogs/Sepsis_dataset.csv",
