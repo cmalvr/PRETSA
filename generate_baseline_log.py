@@ -19,8 +19,9 @@ def violatesTCloseness(distributionActivity, distributionEquivalenceClass, t):
         return False
 
 filePath = sys.argv[1]
-kString = sys.argv[2]
-tString = sys.argv[3]
+dataset = sys.argv[2]
+kString = sys.argv[3]
+tString = sys.argv[4]
 
 k = int(kString)
 t = float(tString)
@@ -33,7 +34,7 @@ activityColName = "Activity"
 baseline_log_dir = Path("/content/PRETSA/baselinelogs")
 baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
-writeFilePath = baseline_log_dir / Path(filePath).name.replace(".csv","_pretsa_baseline_k%s_t%s.csv" % (kString,tString))
+writeFilePath = f"{baseline_log_dir}/{dataset}_pretsa_baseline_k{k}_t{t}.csv"
 
 timeStampColName = "Complete Timestamp"
 

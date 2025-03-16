@@ -1,13 +1,18 @@
 import sys
 import pandas as pd
 import csv
+from pathlib import Path
 import os
 
 class excel_semicolon(csv.excel):
     delimiter = ';'
 
-dictPath = sys.argv[1]
-writeFilePath = dictPath + "pretsa_baseline_statistics_annotations.csv"
+baseline_log_dir = Path("/content/PRETSA/baseline_event_log_annotations/")
+baseline_log_dir.mkdir(parents=True, exist_ok=True) 
+writeFilePath = baseline_log_dir / "baseline_annotations.csv"
+
+
+dictPath = "/content/PRETSA/baselinelogs/"
 
 with open(writeFilePath, 'w+') as writeFile:
     caseIDColName = "Case ID"
@@ -16,11 +21,10 @@ with open(writeFilePath, 'w+') as writeFile:
     writer = csv.DictWriter(writeFile, fieldnames=fieldNamesWrite, dialect=excel_semicolon)
     writer.writeheader()
     for dataset in datasets:
-        for k in range(1,9):
-            k = 2 ** k
+        for k in (4, 8, 16, 32, 64):
             for t in range(0,4):
                 t = round(0.1 - (t*0.025), 3)
-                filePath = dictPath + dataset + "_duration_pretsa_baseline_k" + str(k) + "_t" + str(t) + ".csv"
+                filePath = f"{dictPath}{dataset}_pretsa_baseline_k{k}_t{t}.csv"
                 if os.path.isfile(filePath):
                     eventLog = pd.read_csv(filePath, delimiter=";")
                     if not eventLog.empty:
