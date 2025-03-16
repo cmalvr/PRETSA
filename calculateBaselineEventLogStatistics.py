@@ -9,7 +9,7 @@ caseIDColName = "Case ID"
 datasets = ["Road_Traffic_Fine_Management_Process","CoSeLoG","Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
-    for k in (4, 8, 16, 32, 64):
+    for k in (4, 8, 16):
         t  = 1.0
         filePath = f"/content/PRETSA/baselinelogs/{dataset}_pretsa_baseline_k%{k}_t{t}.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")

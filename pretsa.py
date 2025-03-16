@@ -92,6 +92,8 @@ class Pretsa:
         for node in PreOrderIter(self._tree):
             if node != self._tree:
                 node.cases = node.cases.difference(cutOutTraces)
+                # If the node has less than k cases or violates t-closeness, we cut out the cases and the subtree
+                # To enfoce l-DIVERSITY WE NEED THE DURAION NUMBERS BECAUSE THAT IS THE SENSITIVE VALUE
                 if len(node.cases) < k or self._violatesTCloseness(node.name, node.annotations, t, node.cases):
                     cutOutTraces = cutOutTraces.union(node.cases)
                     self._cutCasesOutOfTreeStartingFromNode(node,cutOutTraces)
