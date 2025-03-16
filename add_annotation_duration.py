@@ -35,7 +35,7 @@ with open(filePath) as csvfile:
         currentCase = ""
         for row in reader:
             if dataset != "bpic2017":
-                formats = ['%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%d %H:%M:%S']
+                formats = ['%Y-%m-%d %H:%M:%S.%f', '%Y-%m-%d %H:%M:%S', '%Y-%m-%d']
                 for fmt in formats:
                     try:
                         newTimeStamp = datetime.datetime.strptime(str(row[timeStampColName]), fmt)
