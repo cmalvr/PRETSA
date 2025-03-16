@@ -11,6 +11,7 @@ filePath = sys.argv[2]
 
 caseIdColName = "Case ID"
 durationColName = "Duration"
+timeStampColName = "Complete Timestamp"
 
 dirPath = Path("/content/PRETSA/original_annotation/")
 dirPath.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't exist
@@ -19,8 +20,6 @@ dirPath.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't
 writeFilePath = dirPath / f"{dataset}_duration.csv"
 
 print(writeFilePath)
-
-timeStampColName = "Complete Timestamp"
 
 
 with open(filePath) as csvfile:
@@ -45,6 +44,6 @@ with open(filePath) as csvfile:
                 startTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 endTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 duration = (endTimeStamp - startTimeStamp).total_seconds()
-                
+
             row[durationColName] = duration
             writer.writerow(row)
