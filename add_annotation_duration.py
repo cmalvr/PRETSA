@@ -8,7 +8,7 @@ class excel_semicolon(csv.excel):
 
 dataset = sys.argv[1]
 filePath = sys.argv[2]
-k = sys.argv[3] 
+k = int(sys.argv[3])
 
 caseIdColName = "Case ID"
 durationColName = "Duration"
