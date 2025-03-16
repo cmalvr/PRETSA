@@ -17,7 +17,7 @@ with open(writeFilePath, 'w+') as writeFile:
     fieldNamesWrite = ["Event Log","method","activity","Avg. Duration"]
     writer = csv.DictWriter(writeFile, fieldnames=fieldNamesWrite, dialect=excel_semicolon)
     writer.writeheader()
-    for dataset in ["CoSeLoG","Sepsis","Road_Traffic_Fine_Management_Process"]:
+    for dataset in ["CoSeLoG","Sepsis"]:
         filePath = dictPath / f"{dataset}_duration.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         data = eventLog.groupby('Activity').Duration.agg("mean")
