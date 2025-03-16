@@ -3,8 +3,10 @@ from levenshtein import levenshtein
 import sys
 from scipy.stats import wasserstein_distance
 from scipy.stats import normaltest
-import pandas as pd
-import numpy as np
+#import pandas as pd
+import cudf as pd
+#import numpy as np
+import cupy as np
 import time
 
 class Pretsa:
