@@ -3,6 +3,3 @@ numpy>=1.18.1
 scipy>=1.4.1
 pandas>=0.23.4
 pm4py
-#For GPU acceleration
-cudf
-cupy
