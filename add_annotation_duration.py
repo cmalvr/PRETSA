@@ -27,7 +27,8 @@ with open(filePath) as csvfile:
     with open(writeFilePath,'w') as writeFile:
         reader = csv.DictReader(csvfile,delimiter=";")
         fieldNamesWrite = reader.fieldnames
-        fieldNamesWrite.append(durationColName)
+        if (durationColName not in fieldNamesWrite):
+            fieldNamesWrite.append(durationColName)
         writer = csv.DictWriter(writeFile, fieldnames=fieldNamesWrite,dialect=excel_semicolon)
         writer.writeheader()
         currentCase = ""
@@ -44,5 +45,7 @@ with open(filePath) as csvfile:
                 startTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 endTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 duration = (endTimeStamp - startTimeStamp).total_seconds()
+            
+            if row[durationColName] != duration: print ("different duration")
             row[durationColName] = duration
             writer.writerow(row)
