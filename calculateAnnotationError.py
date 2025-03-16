@@ -34,7 +34,7 @@ with open(writeFilePath, 'w+') as writeFile:
         algorithmData = pd.read_csv(filePath, delimiter=";")
         for k in range(4,8,16):
             t = 1.0
-            for dataset in ["Sepsis","CoSeLoG","Road_Traffic_Fine_Management_Process"]:
+            for dataset in ["Sepsis","CoSeLoG"]:
                 currentSlide = algorithmData.loc[(algorithmData["k"] == k) & (algorithmData["t"] == t) & (algorithmData["Event Log"] == dataset)]
                 currentSlideDict = dict()
                 for index, rowInSlide in currentSlide.iterrows():
