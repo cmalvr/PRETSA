@@ -16,7 +16,7 @@ writeFilePath = logPath + "pretsa_statistics_annotations.csv"
 
 with open(writeFilePath, 'w+') as writeFile:
     caseIDColName = "Case ID"
-    datasets = ["Road_Traffic_Fine_Management_Process","CoSeLoG","Sepsis"]
+    datasets = ["CoSeLoG","Sepsis"]
     fieldNamesWrite = ["Event Log","k","t","method","activity","Avg. Duration"]
     writer = csv.DictWriter(writeFile, fieldnames=fieldNamesWrite, dialect=excel_semicolon)
     writer.writeheader()

@@ -12,7 +12,7 @@ baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exis
 
 dictPath = "/content/PRETSA/baselinelogs/"
 
-datasets = ["Road_Traffic_Fine_Management_Process","CoSeLoG","Sepsis"]
+datasets = ["CoSeLoG","Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in (4, 8, 16):

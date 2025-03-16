@@ -2,8 +2,7 @@ import subprocess
 
 datasets = {
     "CoSeLoG",
-    "Sepsis",
-    "Road_Traffic_Fine_Management_Process"
+    "Sepsis"
 }
 
 for dataset in datasets:

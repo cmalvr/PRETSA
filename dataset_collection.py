@@ -7,8 +7,7 @@ from pathlib import Path
 # Dictionary of datasets with their URLs
 datasets = {
     "CoSeLoG": "https://data.4tu.nl/file/2db2e3c1-9499-4699-9098-1a28c15a5913/21758246-61e7-4019-bf7d-fb6a9b38df14", 
-    "Sepsis": "https://data.4tu.nl/file/33632f3c-5c48-40cf-8d8f-2db57f5a6ce7/643dccf2-985a-459e-835c-a82bce1c0339", 
-    "Road_Traffic_Fine_Management_Process": "https://data.4tu.nl/file/806acd1a-2bf2-4e39-be21-69b8cad10909/b234b06c-4d4f-4055-9f14-6218e3906d82" 
+    "Sepsis": "https://data.4tu.nl/file/33632f3c-5c48-40cf-8d8f-2db57f5a6ce7/643dccf2-985a-459e-835c-a82bce1c0339"
 }
 # Define directory for downloads and conversions
 download_dir = Path("/content/PRETSA/downloads")

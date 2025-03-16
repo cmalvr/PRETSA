@@ -11,7 +11,7 @@ caseIDColName = "Case ID"
 baseline_log_dir = Path("/content/PRETSA/PRETSA_event_logs_statistics")
 baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
-datasets = ["CoSeLoG", "Sepsis","Road_Traffic_Fine_Management_Process"]
+datasets = ["CoSeLoG", "Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in (4,8,16):
