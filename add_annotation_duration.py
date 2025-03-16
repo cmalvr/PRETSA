@@ -19,7 +19,9 @@ dirPath.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't
 # Define the output file path
 writeFilePath = dirPath / f"{dataset}_duration.csv"
 
-print(writeFilePath)
+print(f"Writting: {writeFilePath}")
+
+print(f"Reading: {filePath}")
 
 
 with open(filePath) as csvfile:
