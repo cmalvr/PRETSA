@@ -11,8 +11,8 @@ datasets = {
     "Road_Traffic_Fine_Management_Process": "https://data.4tu.nl/file/806acd1a-2bf2-4e39-be21-69b8cad10909/b234b06c-4d4f-4055-9f14-6218e3906d82" 
 }
 # Define directory for downloads and conversions
-download_dir = Path("downloads")
-csv_dir = Path("csv_outputs")
+download_dir = Path("/content/PRETSA/downloads")
+csv_dir = Path("/content/PRETSA/csv_outputs")
 download_dir.mkdir(parents=True, exist_ok=True)
 csv_dir.mkdir(parents=True, exist_ok=True)
 
