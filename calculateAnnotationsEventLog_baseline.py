@@ -9,11 +9,10 @@ class excel_semicolon(csv.excel):
 
 baseline_log_dir = Path("/content/PRETSA/baseline_event_log_annotations/")
 baseline_log_dir.mkdir(parents=True, exist_ok=True) 
-
 writeFilePath = baseline_log_dir / "baseline_annotations.csv"
 
 
-dictPath = "/content/PRETSA/baselinelogs/"
+dictPath = Path("/content/PRETSA/baselinelogs/")
 
 with open(writeFilePath, 'w+') as writeFile:
     caseIDColName = "Case ID"
