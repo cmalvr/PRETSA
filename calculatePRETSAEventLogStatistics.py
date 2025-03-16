@@ -39,6 +39,6 @@ for dataset in datasets:
             row['variants'] = len(variants)
             row['cases'] = len(traces)
             print(row)
-            df = df.append(row,ignore_index=True)
+            df = df._append(row,ignore_index=True)
 csvPath = dictPath + "pretsa_statistics.csv"
 df.to_csv(sep=";",path_or_buf=csvPath)
