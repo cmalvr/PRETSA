@@ -10,7 +10,7 @@ caseIDColName = "Case ID"
 baseline_log_dir = Path("/content/PRETSA/baseline_event_logs_statistics")
 baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
-dictPath = "/content/PRETSA/baselinelogs/"
+dictPath = Path("/content/PRETSA/baselinelogs/")
 
 datasets = ["CoSeLoG","Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
