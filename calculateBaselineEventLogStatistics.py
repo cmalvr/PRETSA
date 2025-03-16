@@ -31,6 +31,6 @@ for dataset in datasets:
             row['method'] = "baseline"
             row['variants'] = number_variants.size
             row['cases'] = len(traces)
-            df = df.append(row,ignore_index=True)
+            df = df._append(row,ignore_index=True)
 csvPath = baseline_log_dir / "baseline_statistics.csv"
 df.to_csv(sep=";",path_or_buf=csvPath)
