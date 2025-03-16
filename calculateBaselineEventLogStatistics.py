@@ -6,12 +6,18 @@ import numpy as np
 
 caseIDColName = "Case ID"
 
+# Define directory for saving baseline logs
+baseline_log_dir = Path("/content/PRETSA/baseline_event_logs_statistics")
+baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
+
+dictPath = "/content/PRETSA/baselinelogs/"
+
 datasets = ["Road_Traffic_Fine_Management_Process","CoSeLoG","Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in (4, 8, 16):
         t  = 1.0
-        filePath = f"/content/PRETSA/baselinelogs/{dataset}_pretsa_baseline_k%{k}_t{t}.csv"
+        filePath = dictPath / f"{dataset}_pretsa_baseline_k{k}_t{t}.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         number_variants = eventLog.Variant.value_counts()
         traces = eventLog[caseIDColName].value_counts()
@@ -26,8 +32,5 @@ for dataset in datasets:
             row['variants'] = number_variants.size
             row['cases'] = len(traces)
             df = df.append(row,ignore_index=True)
-# Define directory for saving baseline logs
-baseline_log_dir = Path("/content/PRETSA/baseline_event_logs_statistics")
-baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
-csvPath = f"{baseline_log_dir}/baseline_statistics.csv"
+csvPath = baseline_log_dir / "baseline_statistics.csv"
 df.to_csv(sep=";",path_or_buf=csvPath)

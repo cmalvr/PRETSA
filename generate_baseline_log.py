@@ -34,7 +34,7 @@ activityColName = "Activity"
 baseline_log_dir = Path("/content/PRETSA/baselinelogs")
 baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
-writeFilePath = f"{baseline_log_dir}/{dataset}_pretsa_baseline_k{k}_t{t}.csv"
+writeFilePath = baseline_log_dir / f"{dataset}_pretsa_baseline_k{k}_t{t}.csv"
 
 timeStampColName = "Complete Timestamp"
 

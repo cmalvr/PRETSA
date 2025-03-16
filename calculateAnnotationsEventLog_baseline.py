@@ -9,6 +9,7 @@ class excel_semicolon(csv.excel):
 
 baseline_log_dir = Path("/content/PRETSA/baseline_event_log_annotations/")
 baseline_log_dir.mkdir(parents=True, exist_ok=True) 
+
 writeFilePath = baseline_log_dir / "baseline_annotations.csv"
 
 
@@ -21,9 +22,9 @@ with open(writeFilePath, 'w+') as writeFile:
     writer = csv.DictWriter(writeFile, fieldnames=fieldNamesWrite, dialect=excel_semicolon)
     writer.writeheader()
     for dataset in datasets:
-        for k in (4, 8, 16, 32, 64):
+        for k in (4, 8, 16):
             t = 1.0
-            filePath = f"{dictPath}{dataset}_pretsa_baseline_k{k}_t{t}.csv"
+            filePath = dictPath / f"{dataset}_pretsa_baseline_k{k}_t{t}.csv"
             if os.path.isfile(filePath):
                 eventLog = pd.read_csv(filePath, delimiter=";")
                 if not eventLog.empty:

@@ -1,14 +1,22 @@
 import sys
 import pandas as pd
-dictPath = sys.argv[1]
+from pathlib import Path
+
+
+dictPath =  Path("/content/PRETSA/pretsalog")
 
 caseIDColName = "Case ID"
+
+#Ensure directory exists
+baseline_log_dir = Path("/content/PRETSA/PRETSA_event_logs_statistics")
+baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
 datasets = ["CoSeLoG", "Sepsis","Road_Traffic_Fine_Management_Process"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in (4,8,16):
-        filePath = dictPath + dataset + "_duration_t" + str(k) + "_pretsa.csv"
+        t = 1.0
+        filePath = dictPath / f"{dataset}_t{t}_k{k}_pretsa.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         variants = set()
         caseId = ""
@@ -32,15 +40,5 @@ for dataset in datasets:
             row['cases'] = len(traces)
             print(row)
             df = df.append(row,ignore_index=True)
-            #print("Number of variants: " + str(number_variants.size))
-            #print("Min cases for Variant: " + str(min(variants)))
-            #print("Max cases for Variant: " + str(max(variants)))
-
-            #print("Min events in case: " + str(min(traces)))
-            #print("Max events in case: " + str(max(traces)))
-            #print("Avg events in case: " + str(np.mean(traces)))
-            #print(len(traces))
-
-            #print(variants.sort_values())
-csvPath = dictPath + "pretsa_event_logs_statistics.csv"
+csvPath = dictPath + "pretsa_statistics.csv"
 df.to_csv(sep=";",path_or_buf=csvPath)
