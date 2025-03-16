@@ -21,7 +21,7 @@ with open(writeFilePath, 'w+') as writeFile:
         filePath = dictPath / f"{dataset}_duration.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         data = eventLog.groupby('Activity').Duration.agg("mean")
-        for row in data.iteritems():
+        for row in data.items():
             (key, value) = row
             line = dict()
             line["Event Log"] = dataset

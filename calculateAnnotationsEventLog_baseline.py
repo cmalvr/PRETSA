@@ -28,7 +28,7 @@ with open(writeFilePath, 'w+') as writeFile:
                 eventLog = pd.read_csv(filePath, delimiter=";")
                 if not eventLog.empty:
                     data = eventLog.groupby('Activity').Duration.agg("mean")
-                    for row in data.iteritems():
+                    for row in data.items():
                         (key, value) = row
                         line = dict()
                         line["Event Log"] = dataset
