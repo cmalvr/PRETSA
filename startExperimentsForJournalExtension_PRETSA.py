@@ -1,9 +1,9 @@
 import subprocess
 
 datasets = {
-    "CoSeLoG": "/content/PRETSA/baselogs/CoSeLoG_dataset.csv",
-    "Sepsis": "/content/PRETSA/baselogs/Sepsis_dataset.csv",
-    "Road_Traffic_Fine_Management_Process": "/content/PRETSA/baselogs/traffic_fines_dataset.csv"
+    "CoSeLoG": "/content/PRETSA/original_annotation/CoSeLoG_duration.csv",
+    "Sepsis": "/content/PRETSA/original_annotation/Sepsis_duration.csv",
+    "Road_Traffic_Fine_Management_Process": "/content/PRETSA/original_annotation/Road_Traffic_Fine_Management_Process_duration.csv"
 }
 
 for dataset, filePath in datasets.items():
