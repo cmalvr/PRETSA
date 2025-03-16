@@ -36,10 +36,12 @@ for dataset, url in datasets.items():
     print(f"Processing {dataset}...")
     log = pm4py.read_xes(str(xes_gz_path))
     df = pm4py.convert_to_dataframe(log)
-    df.rename("case:concept:name", "Case ID")
-    df.rename("concept:name", "Activity")
-    df.rename("org:resource", "Resource")
-    df.rename("time:timestamp", "Complete Timestamp")
+    df.rename(columns={
+    "case:concept:name": "Case ID",
+    "concept:name": "Activity",
+    "org:resource": "Resource",
+    "time:timestamp": "Complete Timestamp"
+    }, inplace=True)
     df.to_csv(csv_output_path, index=False)
     print(f"Saved CSV: {csv_output_path}")
 
