@@ -7,5 +7,6 @@ datasets = {
 for dataset, filePath in datasets.items():
     for k in (4, 8, 16):
         t = 1.0
-        subprocess.run(["python", "generate_baseline_log.py", filePath, dataset, str(k), str(t)], check=True)
+        cmd = ["python", "generate_baseline_log.py", filePath, dataset, str(k), str(t)]
         print(f"Running command: {' '.join(cmd)}")  # Debugging line
+        subprocess.run(cmd, check=True)
