@@ -3,6 +3,8 @@ import csv
 import datetime
 from scipy.stats import wasserstein_distance
 from pathlib import Path  # Added for directory handling
+from countVariantsInLog import count_variants
+
 
 
 class excel_semicolon(csv.excel):
@@ -37,6 +39,14 @@ baseline_log_dir.mkdir(parents=True, exist_ok=True)  # Ensure the directory exis
 writeFilePath = baseline_log_dir / f"{dataset}_pretsa_baseline_k{k}_t{t}.csv"
 
 timeStampColName = "Complete Timestamp"
+
+# Load CSV
+event_log = pd.read_csv(filePath, delimiter=";")
+
+# Check if "Variant" column exists; if not, compute and add it
+if variantColName not in event_log.columns:
+    event_log[variantColName] = count_variants(event_log)
+    event_log.to_csv(filePath, sep=";", index=False)  # Overwrite the file with new column
 
 with open(filePath) as csvfile:
     reader = csv.DictReader(csvfile, delimiter=";")
