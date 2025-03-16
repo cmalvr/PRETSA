@@ -26,7 +26,7 @@ print(f"Reading: {filePath}")
 
 with open(filePath) as csvfile:
     with open(writeFilePath,'w') as writeFile:
-        reader = csv.DictReader(csvfile,delimiter=";")
+        reader = csv.DictReader(csvfile,delimiter=",")
         fieldNamesWrite = reader.fieldnames
         if (durationColName not in fieldNamesWrite):
             fieldNamesWrite.append(durationColName)
@@ -35,6 +35,7 @@ with open(filePath) as csvfile:
         currentCase = ""
         for row in reader:
             if dataset != "bpic2017":
+                print(row.fieldnames)
                 newTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 if currentCase != row[caseIdColName]:
                     currentCase = row[caseIdColName]
