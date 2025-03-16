@@ -22,22 +22,21 @@ with open(writeFilePath, 'w+') as writeFile:
     writer.writeheader()
     for dataset in datasets:
         for k in (4, 8, 16, 32, 64):
-            for t in range(0,4):
-                t = round(0.1 - (t*0.025), 3)
-                filePath = f"{dictPath}{dataset}_pretsa_baseline_k{k}_t{t}.csv"
-                if os.path.isfile(filePath):
-                    eventLog = pd.read_csv(filePath, delimiter=";")
-                    if not eventLog.empty:
-                        data = eventLog.groupby('Activity').Duration.agg("mean")
-                        for row in data.iteritems():
-                            (key, value) = row
-                            line = dict()
-                            line["Event Log"] = dataset
-                            line["k"] = k
-                            line["t"] = t
-                            line["method"] = "pretsa_baseline"
-                            line["activity"] = key
-                            line["Avg. Duration"] = value
-                            writer.writerow(line)
-                else:
-                    print(filePath + "does not exist")
+            t = 1.0
+            filePath = f"{dictPath}{dataset}_pretsa_baseline_k{k}_t{t}.csv"
+            if os.path.isfile(filePath):
+                eventLog = pd.read_csv(filePath, delimiter=";")
+                if not eventLog.empty:
+                    data = eventLog.groupby('Activity').Duration.agg("mean")
+                    for row in data.iteritems():
+                        (key, value) = row
+                        line = dict()
+                        line["Event Log"] = dataset
+                        line["k"] = k
+                        line["t"] = t
+                        line["method"] = "pretsa_baseline"
+                        line["activity"] = key
+                        line["Avg. Duration"] = value
+                        writer.writerow(line)
+            else:
+                print(filePath + "does not exist")
