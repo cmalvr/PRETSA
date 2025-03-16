@@ -21,7 +21,7 @@ with open(writeFilePath, 'w+') as writeFile:
     writer = csv.DictWriter(writeFile, fieldnames=fieldNamesWrite, dialect=excel_semicolon)
     writer.writeheader()
     for dataset in datasets:
-        for k in range(4,8,16):
+        for k in (4,8,16):
             t = 1.0
             filePath = dictPath / f"{dataset}_t{t}_k{k}_pretsa.csv"
             if os.path.isfile(filePath):

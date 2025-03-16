@@ -32,7 +32,7 @@ with open(writeFilePath, 'w+') as writeFile:
     writer.writeheader()
     for method, filePath in dictFiles.items():
         algorithmData = pd.read_csv(filePath, delimiter=";")
-        for k in range(4,8,16):
+        for k in (4,8,16):
             print(k)
             t = 1.0
             for dataset in ["Sepsis","CoSeLoG"]:
