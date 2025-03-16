@@ -9,4 +9,4 @@ datasets = {
 for dataset in datasets:
     for k in (4, 8, 16, 32, 64):
         t = 1.0
-        subprocess.run(["python", "runExperimentForJournalExtension_pretsa.py", dataset, str(k), str(t)], check=True)
+        subprocess.run(["python", "/content/PRETSA/startExperimentsForJournalExtension_PRETSA.py", dataset, str(k), str(t)], check=True)
