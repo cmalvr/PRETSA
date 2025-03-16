@@ -46,6 +46,6 @@ with open(filePath) as csvfile:
                 endTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 duration = (endTimeStamp - startTimeStamp).total_seconds()
             
-            if row[durationColName] != duration: print ("different duration")
+            if row.get(durationColName) != duration: print (row.get(durationColName))
             row[durationColName] = duration
             writer.writerow(row)
