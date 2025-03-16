@@ -35,7 +35,7 @@ with open(filePath) as csvfile:
         currentCase = ""
         for row in reader:
             if dataset != "bpic2017":
-                print(row.fieldnames)
+                print(row["Complete Timestamp"])
                 newTimeStamp = datetime.datetime.strptime(row[timeStampColName], '%Y/%m/%d %H:%M:%S.%f')
                 if currentCase != row[caseIdColName]:
                     currentCase = row[caseIdColName]
