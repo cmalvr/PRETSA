@@ -1,10 +1,12 @@
-import pretsa
-import os
-import sys
+import subprocess
 
-filePath = sys.argv[1]
+datasets = {
+    "CoSeLoG": "/content/PRETSA/baselogs/CoSeLoG_dataset.csv",
+    "Sepsis": "/content/PRETSA/baselogs/Sepsis_dataset.csv",
+    "Road_Traffic_Fine_Management_Process": "/content/PRETSA/baselogs/traffic_fines_dataset.csv"
+}
 
-for k in (4,8,16,32,64):
-    #for t in (1.0,2.0,3.0,4.0,5.0):
-    t = 1.0
-    os.system("timeout 1d time python runExperimentForJournalExtension_pretsa.py %s %s %s &" % (filePath,str(k),str(t)))
+for dataset, filePath in datasets.items():
+    for k in (4, 8, 16, 32, 64):
+        t = 1.0
+        subprocess.run(["python", "runExperimentForJournalExtension_pretsa.py", dataset, str(k), str(t)], check=True)
