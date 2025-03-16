@@ -8,16 +8,15 @@ class excel_semicolon(csv.excel):
 
 dataset = sys.argv[1]
 filePath = sys.argv[2]
-k = int(sys.argv[3])
 
 caseIdColName = "Case ID"
 durationColName = "Duration"
 
-dirPath = Path("/content/PRETSA/annotation/")
+dirPath = Path("/content/PRETSA/original_annotation/")
 dirPath.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't exist
 
 # Define the output file path
-writeFilePath = dirPath / f"{dataset}_duration_pretsa_baseline_k{str(k)}.csv"
+writeFilePath = dirPath / f"{dataset}_duration.csv"
 
 print(writeFilePath)
 
