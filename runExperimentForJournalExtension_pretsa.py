@@ -6,4 +6,4 @@ k = sys.argv[2]
 t = sys.argv[3]
 
 # Run runPretsa.py to process the dataset
-subprocess.run(["python", "runPretsa.py", dataset, str(k), str(t)], check=True)
+subprocess.run(["python", "/content/PRETSA/runPretsa.py", dataset, str(k), str(t)], check=True)
