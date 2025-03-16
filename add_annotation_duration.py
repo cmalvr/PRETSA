@@ -13,9 +13,11 @@ k = int(sys.argv[3])
 caseIdColName = "Case ID"
 durationColName = "Duration"
 
+dirPath = Path("/content/PRETSA/annotation/")
+dirPath.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't exist
 
 # Define the output file path
-writeFilePath = f"/content/PRETSA/annotation/{dataset}_duration_pretsa_baseline_k{str(k)}.csv"
+writeFilePath = dirPath / f"{dataset}_duration_pretsa_baseline_k{str(k)}.csv"
 
 print(writeFilePath)
 
