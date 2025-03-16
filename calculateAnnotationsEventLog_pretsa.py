@@ -12,7 +12,7 @@ dictPath = Path("/content/PRETSA/pretsalog")
 logPath = Path("/content/PRETSA/PRETSA_event_log_annotations/")
 logPath.mkdir(parents=True, exist_ok=True) 
 
-writeFilePath = logPath + "pretsa_statistics_annotations.csv"
+writeFilePath = logPath / "pretsa_statistics_annotations.csv"
 
 with open(writeFilePath, 'w+') as writeFile:
     caseIDColName = "Case ID"
