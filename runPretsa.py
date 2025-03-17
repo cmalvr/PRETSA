@@ -28,7 +28,7 @@ targetFilePathPickle = log_dir / f"{dataset}_t{t}_k{k}_pretsa.pickle"
 # Run PRETSA
 print(f" Load Event Log: {annotationFilePath}")
 start = time.time()
-pretsa = Pretsa_gan(eventLog) #Initializing tree
+pretsa = Pretsa_gan(eventLog, t) #Initializing tree
 cutOutCases, distanceLog = pretsa.runPretsa(int(k), float(t))
 
 print(f" Modified {len(cutOutCases)} cases for k={k}, t={t}")

@@ -23,12 +23,13 @@ class Pretsa_gan:
         else:
             self.generator = None
 
-    def __init__(self,eventLog):
+    def __init__(self,eventLog,t_threshold):
         root = AnyNode(id='Root', name="Root", cases=set(), sequence="", annotation=dict(),sequences=set())
         current = root
         currentCase = ""
         caseToSequenceDict = dict() 
         sequence = None
+        self.__t_threshold = float(t_threshold)
         self.__caseIDColName = "Case ID"
         self.__activityColName = "Activity"
         self.__annotationColName = "Duration"
