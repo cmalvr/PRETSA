@@ -5,9 +5,24 @@ from scipy.stats import wasserstein_distance
 from scipy.stats import normaltest
 import pandas as pd
 import numpy as np
-import time
+from gan_module import train_gan, generate_synthetic_durations  # Import the GAN functions
+from pathlib import Path
+import json
 
-class Pretsa:
+class Pretsa_gan:
+    def _trainGAN(self):
+        """
+        Trains GAN using all durations from the dataset and stores it in self.generator
+        """
+        all_durations = []
+        for durations in self.__annotationDataOverAll.values():
+            all_durations.extend(durations)
+
+        if len(all_durations) >= 5:
+            self.generator = train_gan(all_durations, all_durations, self.__t_threshold)
+        else:
+            self.generator = None
+
     def __init__(self,eventLog):
         root = AnyNode(id='Root', name="Root", cases=set(), sequence="", annotation=dict(),sequences=set())
         current = root
@@ -67,6 +82,71 @@ class Pretsa:
         self.__setMaxDifferences()
         self.__haveAllValuesInActivitityDistributionTheSameValue = dict()
         self._distanceMatrix = self.__generateDistanceMatrixSequences(self._getAllPotentialSequencesTree(self._tree))
+        self._trainGAN()
+    
+
+    def _attemptGANRepair(self, node, t):
+        """
+        Uses the GAN to generate synthetic durations for a node to bring it within T-Closeness threshold.
+        Separates drift tracking from T-Closeness validation.
+        """
+        if self.generator is None or node.name not in self.__annotationDataOverAll:
+            return None  # No GAN available, return failure
+
+        original_durations = np.array([node.annotations[case] for case in node.cases])
+        global_distribution = np.array(self.__annotationDataOverAll[node.name])
+
+        # Generate synthetic durations using GAN
+        repaired_durations = np.array(generate_synthetic_durations(
+            self.generator,
+            global_distribution,
+            original_durations.tolist(),
+            num_samples=len(node.cases)
+        ))
+
+        # Compute Wasserstein Drift (tracks how much GAN changed things)
+        drift = wasserstein_distance(original_durations, repaired_durations)
+
+        # Compute actual T-Closeness validation (is this distribution valid?)
+        maxDifference = self.annotationMaxDifferences[node.name]
+        t_closeness_violation = wasserstein_distance(global_distribution, repaired_durations) / maxDifference >= t
+
+        if not t_closeness_violation:  # If within threshold, accept modifications
+            repaired_annotations = {
+                case: new_duration for case, new_duration in zip(node.cases, repaired_durations)
+            }
+
+            # Compute Mean Absolute Change for tracking GAN impact
+            mean_absolute_change = np.mean(np.abs(original_durations - repaired_durations))
+
+            # Log information separately
+            self.gan_log.append({
+                "Activity": node.name,
+                "Wasserstein Drift": drift,  # How much was changed
+                "T-Closeness Valid": not t_closeness_violation,  # Whether it passed T-Closeness
+                "Mean Absolute Change": mean_absolute_change,  # Individual case changes
+                "Original Mean": np.mean(original_durations),
+                "Modified Mean": np.mean(repaired_durations),
+                "Original Std Dev": np.std(original_durations),
+                "Modified Std Dev": np.std(repaired_durations),
+                "Cases Affected": len(node.cases)
+            })
+
+            return repaired_annotations  # Return modified durations
+
+        return None  # Repair unsuccessful (T-Closeness still violated)
+
+
+    def _save_gan_log_json(self):
+        """
+        Saves the GAN log dictionary as a JSON file in '/content/PRETSA/gan_logs.json'.
+        Ensures that the directory exists before writing the file.
+        """
+        log_path = Path("/content/PRETSA/gan_logs.json")  # Define JSON log file path
+        log_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure that the directory exists
+
+        with open(log_path, mode="w") as file:
+            json.dump(self.gan_log_dict, file, indent=4)  # Save logs in JSON format
 
     def __addAnnotation(self, annotation, activity):
         dataForActivity = self.__annotationDataOverAll.get(activity, None)
@@ -99,18 +179,51 @@ class Pretsa:
         else:
             return self._violatesStochasticTCloseness(distributionActivity,distributionEquivalenceClass,t,activity)
 
-    def _treePrunning(self, k,t):
+    #In this case always sequential prunning is used
+    def _treePrunning(self, k, t):
         cutOutTraces = set()
+        gan_log = []  # Track GAN modifications
+
         for node in PreOrderIter(self._tree):
             if node != self._tree:
                 node.cases = node.cases.difference(cutOutTraces)
-                # If the node has less than k cases or violates t-closeness, we cut out the cases and the subtree
-                # To enfoce l-DIVERSITY WE NEED THE DURAION NUMBERS BECAUSE THAT IS THE SENSITIVE VALUE
-                if len(node.cases) < k or self._violatesTCloseness(node.name, node.annotations, t, node.cases):
+
+                violates_k = len(node.cases) < k
+                violates_t = self._violatesTCloseness(node.name, node.annotations, t, node.cases)
+
+                # Case 1: Violates K-Anonymity but NOT T-Closeness → Prune & Merge (Original Method)
+                if violates_k and not violates_t:
                     cutOutTraces = cutOutTraces.union(node.cases)
-                    self._cutCasesOutOfTreeStartingFromNode(node,cutOutTraces)
+                    self._cutCasesOutOfTreeStartingFromNode(node, cutOutTraces)
                     if self._sequentialPrunning:
                         return cutOutTraces
+
+                # Case 2: Violates T-Closeness but NOT K-Anonymity → Attempt GAN Repair
+                elif violates_t and not violates_k:
+                    repaired_durations = self._attemptGANRepair(node, t)
+                    if repaired_durations is not None:
+                        node.annotations = repaired_durations  # Apply GAN-fix
+                        gan_log.append((node.name, repaired_durations))
+                    else:
+                        # If GAN repair fails, prune as usual
+                        cutOutTraces = cutOutTraces.union(node.cases)
+                        self._cutCasesOutOfTreeStartingFromNode(node, cutOutTraces)
+                        if self._sequentialPrunning:
+                            return cutOutTraces
+
+                # Case 3: Violates BOTH K-Anonymity and T-Closeness
+                elif violates_k and violates_t:
+                    repaired_durations = self._attemptGANRepair(node, t)
+                    if repaired_durations is not None:
+                        node.annotations = repaired_durations  # Apply GAN-fix first
+                        gan_log.append((node.name, repaired_durations))
+                    else:
+                        # If GAN repair fails, prune like in the original
+                        cutOutTraces = cutOutTraces.union(node.cases)
+                        self._cutCasesOutOfTreeStartingFromNode(node, cutOutTraces)
+                        if self._sequentialPrunning:
+                            return cutOutTraces   
+
         return cutOutTraces
 
     def _cutCasesOutOfTreeStartingFromNode(self,node,cutOutTraces,tree=None):
@@ -180,6 +293,10 @@ class Pretsa:
         else:
             cutOutCases = self._treePrunning(k,t)
             self.__combineTracesAndTree(cutOutCases)
+
+            #Saving GAN log after prunning
+            self._save_gan_log_json()
+            
         return cutOutCases, self._overallLogDistance
 
     def __generateNewAnnotation(self, activity):
