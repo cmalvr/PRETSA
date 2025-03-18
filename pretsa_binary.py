@@ -221,6 +221,7 @@ class Pretsa_binary:
             mid = (low + high) // 2  # Midpoint in sorted possible values
 
             print(possible_values)
+            print(len(possible_values))
 
             # If no possible values are left or all cases are already at the same value
             if len(possible_values) == 0 or len(case_ids) == 0:
