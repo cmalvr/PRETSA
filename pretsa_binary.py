@@ -253,7 +253,7 @@ class Pretsa_binary:
                 1 for original, new in zip(original_durations, best_replacement) if original != new
             )
 
-            # **Only log and apply changes if at least one annotation was modified**
+            # Only log and apply changes if at least one annotation was modified*
             if changes_made > 0:
                 self.t_closeness_adjustments.append({
                     "Activity": activity,
