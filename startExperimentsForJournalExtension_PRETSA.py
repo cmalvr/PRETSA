@@ -1,7 +1,7 @@
 import subprocess
 import sys
 
-t = sys.argv[1]
+t = float(sys.argv[1])
 
 datasets = {
     "CoSeLoG",
