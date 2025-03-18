@@ -1,5 +1,5 @@
 import sys
-from  pretsa import Pretsa
+from  pretsa_binary import Pretsa_binary
 import pandas as pd
 from pathlib import Path
 import pickle
@@ -18,7 +18,7 @@ annotationFilePath = f"/content/PRETSA/original_annotation/{dataset}_duration.cs
 eventLog = pd.read_csv(annotationFilePath, delimiter=";")
 
 # Define output directory
-log_dir = Path("/content/PRETSA/pretsalog")
+log_dir = Path("/content/PRETSA/pretsa_binarylog")
 log_dir.mkdir(parents=True, exist_ok=True)
 
 # Define output file paths
@@ -28,7 +28,7 @@ targetFilePathPickle = log_dir / f"{dataset}_t{t}_k{k}_pretsa.pickle"
 # Run PRETSA
 print(f" Load Event Log: {annotationFilePath}")
 start = time.time()
-pretsa = Pretsa(eventLog) #Initializing tree
+pretsa = Pretsa_binary(eventLog, dataset, t, k) #Initializing tree
 cutOutCases, distanceLog = pretsa.runPretsa(int(k), float(t))
 
 print(f" Modified {len(cutOutCases)} cases for k={k}, t={t}")
