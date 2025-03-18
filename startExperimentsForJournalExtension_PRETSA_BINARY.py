@@ -1,7 +1,9 @@
 import subprocess
 import sys
+import json
 
-t_value = sys.argv[1]
+t_value = json.loads(sys.argv[1])
+
 
 datasets = {
     "CoSeLoG",
