@@ -199,6 +199,8 @@ class Pretsa_binary:
         # **Binary search to find the best valid replacement**
         for _ in range(20):  # Limit to 20 iterations for efficiency
             mid = (low + high) // 2  # Midpoint in sorted possible values
+            print(f"POSSIBLE: {possible_values[:mid+1]}")
+            print(f"CASE_IDS: {len(case_ids)}")
             candidate_durations = np.random.choice(possible_values[:mid+1], size=len(case_ids), replace=True)
 
             # Compute Wasserstein Distance after modification
