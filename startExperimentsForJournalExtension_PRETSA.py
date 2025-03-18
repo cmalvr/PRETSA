@@ -3,8 +3,6 @@ import sys
 
 t = sys.argv[1]
 
-print(t)
-
 datasets = {
     "CoSeLoG",
     "Sepsis"

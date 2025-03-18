@@ -10,12 +10,14 @@ import json
 from pathlib import Path
 
 class Pretsa_binary:
-    def __init__(self,eventLog, dataset):
+    def __init__(self,eventLog, dataset, t , k):
         root = AnyNode(id='Root', name="Root", cases=set(), sequence="", annotation=dict(),sequences=set())
         current = root
         currentCase = ""
         caseToSequenceDict = dict() 
         sequence = None
+        self.__t = t
+        self.__k = k
         self.__dataset = dataset
         self.__caseIDColName = "Case ID"
         self.__activityColName = "Activity"
@@ -183,7 +185,7 @@ class Pretsa_binary:
         original_durations = np.array(list(node.annotations.values()))  # Node's current durations
         possible_values = sorted(self.__annotationDataOverAll[activity])  # All known durations for this activity
 
-        if not possible_values or len(original_durations) == 0:
+        if not possible_values or len(original_durations) == 0 or len(possible_values) == 0:
             return  # Nothing to adjust
 
         maxDifference = self.annotationMaxDifferences[activity]  # Normalized threshold
@@ -235,7 +237,7 @@ class Pretsa_binary:
         
     def _save_tcloseness_logs_json(self):
         """ Saves the T-Closeness adjustment logs to a JSON file. """
-        log_path = Path(f"/content/PRETSA/t-closeness/{self.__dataset}_t_closeness_logs.json")
+        log_path = Path(f"/content/PRETSA/t-closeness/_k{self.__k}_t{self.__t}_closeness_logs.json")
         log_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
 
         with open(log_path, "w") as file:
