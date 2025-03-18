@@ -98,7 +98,7 @@ When `runPretsa_BINARY(k, t, normalTCloseness=True)` is executed, it follows thi
 - `calculateDurationDifferences.py`
 - `mapDurationDifferences.py`
 
-This implementation enables direct download of data files with `dataset_collection.py`, allowing users to use any available dataset online or their own datasets. Users can pass a list of **k** and **t** values to each sanitization method to assess security-related design choices for sanitizing their own logs.
+This implementation enables direct download of data files with `dataset_collection.py`, allowing users to use any available dataset online or their own datasets. Users can pass a list of **k** and **t** values to each sanitization method to assess security-related design choices to sanitize their own event logs.
 
 It also introduces **heatmaps** to visualize the impact of different **k** and **t** values, helping users find an optimal balance between privacy and data utility.
 
