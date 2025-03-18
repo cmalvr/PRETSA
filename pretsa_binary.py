@@ -220,12 +220,13 @@ class Pretsa_binary:
         for _ in range(50):  # Limit to 50 iterations for efficiency
             mid = (low + high) // 2  # Midpoint in sorted possible values
 
-            print(possible_values)
-            print(len(possible_values))
+            
 
             # If no possible values are left or all cases are already at the same value
             if len(possible_values) == 0 or len(case_ids) == 0:
                 return
+            
+            print(f"WHAT? :{possible_values[:mid+1]}")
 
             candidate_durations = np.random.choice(possible_values[:mid+1], size=len(case_ids), replace=True)
 
