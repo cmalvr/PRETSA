@@ -18,7 +18,7 @@ class Pretsa_gan:
         for durations in self.__annotationDataOverAll.values():
             all_durations.extend(durations)
 
-        if len(all_durations) >= 5:
+        if len(all_durations) >= 1:
             self.generator = train_gan(all_durations, all_durations, self.__t_threshold)
         else:
             self.generator = None
@@ -92,6 +92,7 @@ class Pretsa_gan:
         Separates drift tracking from T-Closeness validation.
         """
         if self.generator is None or node.name not in self.__annotationDataOverAll:
+            print("ERROR: No GAN available for this activity.")
             return None  # No GAN available, return failure
 
         original_durations = np.array([node.annotations[case] for case in node.cases])
