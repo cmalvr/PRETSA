@@ -197,9 +197,9 @@ class Pretsa_binary:
         candidate_replacements = []  # Store valid replacements
 
         # **Binary search to find the best valid replacement**
-        for _ in range(20):  # Limit to 20 iterations for efficiency
+        for _ in range(50):  # Limit to 20 iterations for efficiency
             mid = (low + high) // 2  # Midpoint in sorted possible values
-            
+
             #if no possible values are left or all cases are already at the same value
             if len(possible_values) or len(case_ids) == 0:
                 break
