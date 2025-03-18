@@ -12,10 +12,13 @@ def extract_t_k_values(filename):
         return t_value, k_value
     return None, None
 
-def find_matching_files(dataset_name):
+def find_matching_files(dataset_name, option = "default"):
     """Finds matching original (sanitized) and processed (original) files based on t and k values."""
     original_dir = "/content/PRETSA/original_annotation/"
-    sanitized_dir = "/content/PRETSA/pretsalog/"
+    if option == "default":
+        sanitized_dir = "/content/PRETSA/pretsalog/"
+    elif option == "binary":
+        sanitized_dir = "/content/PRETSA/pretsa_binarylog/"
 
     # List files in directories
     original_files = [f for f in os.listdir(original_dir) if dataset_name in f]
@@ -33,14 +36,12 @@ def find_matching_files(dataset_name):
                                     t, k))
     return matches
 
-def calculate_duration_differences(dataset_name):
+def calculate_duration_differences(dataset_name, option = "default"):
     """Calculates duration differences for all matched files of a dataset."""
-    matches = find_matching_files(dataset_name)
+    matches = find_matching_files(dataset_name, option)
     if not matches:
         print(f"No matching files found for dataset: {dataset_name}")
         return None
-    
-    print(matches)
 
     error_logs = []
 
@@ -75,8 +76,13 @@ def calculate_duration_differences(dataset_name):
         final_df = pd.concat(error_logs, ignore_index=True)
 
         # Save results
-        output_dir = Path("/content/PRETSA/error_logs/")
-        output_dir.mkdir(parents=True, exist_ok=True)
+        if option == "default":
+            output_dir = Path("/content/PRETSA/error_logs/")
+            output_dir.mkdir(parents=True, exist_ok=True)
+        elif option == "binary":
+            output_dir = Path("/content/PRETSA/binary_error_logs/")
+            output_dir.mkdir(parents=True, exist_ok=True)
+        
         output_path = output_dir / f"{dataset_name}_duration_errors.csv"
         final_df.to_csv(output_path, sep=";", index=False)
 
