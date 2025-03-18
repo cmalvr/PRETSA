@@ -259,11 +259,21 @@ class Pretsa_binary:
             self.__combineTracesAndTree(cutOutCases)
 
         print(" Fixing T-closeness...")
+        modified_nodes = 0  # Track modified nodes
 
         for node in PreOrderIter(self._tree):
             if node != self._tree:  # Avoid processing root node
                 if self._violatesTCloseness(node.name, node.annotations, t, node.cases):
                     self._binary_search_adjust(node, t_threshold= t)
+                    modified_nodes += 1
+
+        print(f"T-Closeness adjustments applied to {modified_nodes} nodes.")
+
+          # **Save T-Closeness Logs**
+        if self.t_closeness_adjustments:
+            self._save_tcloseness_logs_json()
+            print(f"T-Closeness logs saved: {len(self.t_closeness_adjustments)} adjustments recorded.")
+
         return cutOutCases, self._overallLogDistance
 
     def __generateNewAnnotation(self, activity):
