@@ -1,7 +1,9 @@
-import sys
 import pandas as pd
 from pathlib import Path
 import numpy as np
+import sys
+
+t = sys.argv[1]
 
 
 caseIDColName = "Case ID"
@@ -16,7 +18,6 @@ datasets = ["CoSeLoG","Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in (4, 8, 16):
-        t  = 1.0
         filePath = dictPath / f"{dataset}_pretsa_baseline_k{k}_t{t}.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         number_variants = eventLog.Variant.value_counts()

@@ -1,4 +1,7 @@
 import subprocess
+import sys
+
+t = sys.argv[1]
 
 datasets = {
     "CoSeLoG": "/content/PRETSA/original_annotation/CoSeLoG_duration.csv",
@@ -6,5 +9,4 @@ datasets = {
 
 for dataset, filePath in datasets.items():
     for k in (4, 8, 16):
-        t = 1.0
         subprocess.run(["python", "generate_baseline_log.py", filePath, dataset, str(k), str(t)], check=True)

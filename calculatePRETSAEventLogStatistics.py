@@ -2,6 +2,8 @@ import sys
 import pandas as pd
 from pathlib import Path
 
+t = sys.argv[1]
+
 
 dictPath =  Path("/content/PRETSA/pretsalog")
 
@@ -15,7 +17,6 @@ datasets = ["CoSeLoG", "Sepsis"]
 df = pd.DataFrame(columns=['Dataset', 'k', 'method','variants','cases'])
 for dataset in datasets:
     for k in (4,8,16):
-        t = 1.0
         filePath = dictPath / f"{dataset}_t{t}_k{k}_pretsa.csv"
         eventLog = pd.read_csv(filePath, delimiter=";")
         variants = set()

@@ -1,9 +1,12 @@
-import sys
 import pandas as pd
 import csv
 import os
 import numpy as np
 from pathlib import Path
+import sys
+
+t = sys.argv[1]
+
 class excel_semicolon(csv.excel):
     delimiter = ';'
 
@@ -22,7 +25,6 @@ with open(writeFilePath, 'w+') as writeFile:
     writer.writeheader()
     for dataset in datasets:
         for k in (4,8,16):
-            t = 1.0
             filePath = dictPath / f"{dataset}_t{t}_k{k}_pretsa.csv"
             if os.path.isfile(filePath):
                 eventLog = pd.read_csv(filePath, delimiter=";")
