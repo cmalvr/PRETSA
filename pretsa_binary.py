@@ -198,6 +198,7 @@ class Pretsa_binary:
         
         possible_values = sorted(self.__annotationDataOverAll[activity])  # All known durations for this activity
 
+
         # If no possible values exist or there are no cases, return without modifications
         if not possible_values or len(possible_values) == 0 or len(case_ids) == 0:
             return 0  
@@ -219,9 +220,11 @@ class Pretsa_binary:
         for _ in range(50):  # Limit to 50 iterations for efficiency
             mid = (low + high) // 2  # Midpoint in sorted possible values
 
+            print(possible_values)
+
             # If no possible values are left or all cases are already at the same value
             if len(possible_values) == 0 or len(case_ids) == 0:
-                break
+                return
 
             candidate_durations = np.random.choice(possible_values[:mid+1], size=len(case_ids), replace=True)
 
