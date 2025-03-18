@@ -21,7 +21,7 @@ def calculate_duration_differences(original_file, sanitized_file):
     merged_df = original_df.merge(sanitized_df, on=['Activity', 'Case ID'], how='left', suffixes=('_orig', '_san'))
 
     # Fill missing durations in sanitized log with 0 (indicating removed activity)
-    merged_df['Duration_san'].fillna(0, inplace=True)
+    merged_df['Duration_san'] = merged_df['Duration_san'].fillna(0)
     
     # Compute absolute relative error
     merged_df['Relative Error'] = np.abs((merged_df['Duration_san'] - merged_df['Duration_orig']) / (merged_df['Duration_orig'] + 1e-6))
