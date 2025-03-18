@@ -224,7 +224,7 @@ class Pretsa_binary:
 
             # If no possible values are left or all cases are already at the same value
             if len(possible_values) == 0 or len(case_ids) == 0:
-                return
+                break
             
             print(f"WHAT? :{possible_values[:mid+1]}")
 
