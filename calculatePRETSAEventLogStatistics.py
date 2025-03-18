@@ -41,5 +41,5 @@ for dataset in datasets:
             row['cases'] = len(traces)
             print(row)
             df = df._append(row,ignore_index=True)
-csvPath = dictPath / "pretsa_statistics.csv"
+csvPath = baseline_log_dir / "pretsa_statistics.csv"
 df.to_csv(sep=";",path_or_buf=csvPath)
