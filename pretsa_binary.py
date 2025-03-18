@@ -25,7 +25,8 @@ class Pretsa_binary:
         self.__normaltest_alpha = 0.05
         self.__normaltest_result_storage = dict()
         self.__normalTCloseness = True
-
+        self.t_closeness_adjustments = []  # Log adjustments for this node
+        
         # Iterates through the event log and creates a tree structure
         for index, row in eventLog.iterrows():
             
