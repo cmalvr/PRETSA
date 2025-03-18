@@ -121,8 +121,9 @@ This implementation enhances PRETSA by introducing:
 
 ## References
 
-[1]. [Original PRETSA Paper](https://doi.org/10.1109/ICPM.2019.00012)
-[2]. [Original GitHub](https://github.com/samadeusfp/PRETSA)
-[3]. [T-Closeness Paper](https://doi.org/10.1109/ICDE.2007.367856)
-[4]. [Sepsis Dataset](https://data.4tu.nl/repository/uuid:270fd440-1057-4fb9-89a9-b699b47990f5)
-[5]. [CoSeLoG Dataset](https://data.4tu.nl/repository/uuid:26aba40d-8b2d-435b-b5af-6d4bfbd7a270)
+[1]. S. A. Fahrenkrog-Petersen, H. van der Aa and M. Weidlich, "PRETSA: Event Log Sanitization for Privacy-aware Process Discovery," 2019 International Conference on Process Mining (ICPM), Aachen, Germany, 2019, pp. 1-8, doi: 10.1109/ICPM.2019.00012.
+[2]. [Original Github](https://github.com/samadeusfp/PRETSA)
+[3]. N. Li, T. Li and S. Venkatasubramanian, "t-Closeness: Privacy Beyond k-Anonymity and l-Diversity," 2007 IEEE 23rd International Conference on Data Engineering, Istanbul, Turkey, 2007, pp. 106-115, doi: 10.1109/ICDE.2007.367856.
+keywords: {Privacy;Earth;Computer science;Publishing;Motion measurement;Databases;Data security;Diseases;Remuneration;Protection},
+[4]. M. De Leoni and F. Mannhardt, “Road traffic fine management process,” 2015. https://data.4tu.nl/repository/uuid:270fd440-1057-4fb9-89a9-b699b47990f5
+[5]. J. Buijs, “Environmental permit application process (‘wabo’), coselog project,” 2014. https://data.4tu.nl/repository/uuid:26aba40d-8b2d-435b-b5af-6d4bfbd7a270
