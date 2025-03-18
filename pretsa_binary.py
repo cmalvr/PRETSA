@@ -185,7 +185,7 @@ class Pretsa_binary:
         original_durations = np.array(list(node.annotations.values()))  # Node's current durations
         possible_values = sorted(self.__annotationDataOverAll[activity])  # All known durations for this activity
 
-        if not possible_values or len(original_durations) == 0 or len(possible_values) == 0:
+        if not possible_values or len(original_durations) == 0 or len(possible_values) == 0 or len(case_ids) == 0:
             return  # Nothing to adjust
 
         maxDifference = self.annotationMaxDifferences[activity]  # Normalized threshold
