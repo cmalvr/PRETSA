@@ -10,7 +10,8 @@ class excel_semicolon(csv.excel):
     delimiter = ';'
 
 dictFiles = {"baseline":"/content/PRETSA/baseline_event_log_annotations/baseline_annotations.csv",
-             "pretsa":"/content/PRETSA/PRETSA_event_log_annotations/pretsa_statistics_annotations.csv"}
+             "pretsa":"/content/PRETSA/PRETSA_event_log_annotations/pretsa_annotations.csv"}
+
 fileOriginalDataPath = "/content/PRETSA/original_event_log_annotations/original_annotations.csv"
 
 
