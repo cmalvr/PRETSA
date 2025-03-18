@@ -19,6 +19,7 @@ class Pretsa_gan:
             all_durations.extend(durations)
 
         if len(all_durations) >= 1:
+            print(f"Training GAN with {len(all_durations)} samples...")
             self.generator = train_gan(all_durations, all_durations, self.__t_threshold)
         else:
             self.generator = None

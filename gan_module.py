@@ -80,6 +80,7 @@ def train_gan(real_data, activity_data, t_threshold, epochs=500, batch_size=32):
     activity_stats = torch.tensor([activity_mean, activity_var], dtype=torch.float32).repeat(batch_size, 1).to(device)
 
     for epoch in range(epochs):
+        print(f" Now training epoch: {epoch}")
         for _ in range(len(real_data) // batch_size):
             # Select a random batch of real durations
             real_samples = real_data[torch.randint(0, len(real_data), (batch_size,))]
