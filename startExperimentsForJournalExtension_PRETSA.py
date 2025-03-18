@@ -2,7 +2,8 @@ import subprocess
 import sys
 import json
 
-t_value = json.loads(sys.argv[1])
+k_value = json.loads(sys.argv[1])
+t_value = json.loads(sys.argv[2])
 
 datasets = {
     "CoSeLoG",
@@ -10,6 +11,6 @@ datasets = {
 }
 
 for dataset in datasets:
-    for k in (4, 8, 16):
+    for k in k_value:
         for t in t_value:
             subprocess.run(["python", "/content/PRETSA/runExperimentForJournalExtension_pretsa.py", dataset, str(k), str(t)], check=True)
