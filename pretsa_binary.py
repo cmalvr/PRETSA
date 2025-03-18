@@ -171,73 +171,105 @@ class Pretsa_binary:
             self._overallLogDistance += lowestDistance
             self._addCaseToTree(trace, bestSequence)
             
-    def _binary_search_adjust(self, node, t_threshold):
-        """
-        Adjusts a node's annotations using binary search over possible activity durations
-        while minimizing modifications and ensuring T-Closeness.
+def _binary_search_adjust(self, node, t_threshold):
+    """
+    Adjusts a node's annotations using binary search over possible activity durations
+    while minimizing modifications and ensuring T-Closeness.
 
-        Args:
-            node: The tree node containing the annotations (CaseID -> duration).
-            t_threshold: Maximum allowed Wasserstein Distance fraction.
-        """
-        activity = node.name
-        case_ids = list(node.annotations.keys())
-        original_durations = np.array(list(node.annotations.values()))  # Node's current durations
-        possible_values = sorted(self.__annotationDataOverAll[activity])  # All known durations for this activity
+    Args:
+        node: The tree node containing the annotations (CaseID -> duration).
+        t_threshold: Maximum allowed Wasserstein Distance fraction.
 
-        if not possible_values or len(original_durations) == 0 or len(possible_values) == 0 or len(case_ids) == 0:
-            return  # Nothing to adjust
+    Returns:
+        int: 1 if modifications were made, 0 otherwise.
+    """
+    activity = node.name
+    case_ids = list(node.annotations.keys())
 
-        maxDifference = self.annotationMaxDifferences[activity]  # Normalized threshold
+    # Consider only data from cases still in node
+    original_durations = []
+    casesInClass = node.cases.intersection(set(node.annotations.keys()))
+    for caseInClass in casesInClass:
+        original_durations.append(node.annotations[caseInClass])
 
-        # Compute initial Wasserstein Distance (before adjustment)
-        wasserstein_before = wasserstein_distance(self.__annotationDataOverAll[activity], original_durations)
+    # If no durations exist in the node, return without modifications
+    if len(original_durations) == 0:
+        return 0
+    
+    possible_values = sorted(self.__annotationDataOverAll[activity])  # All known durations for this activity
 
-        low, high = 0, len(possible_values) - 1
-        candidate_replacements = []  # Store valid replacements
+    # If no possible values exist or there are no cases, return without modifications
+    if not possible_values or len(possible_values) == 0 or len(case_ids) == 0:
+        return 0  
 
-        # **Binary search to find the best valid replacement**
-        for _ in range(50):  # Limit to 20 iterations for efficiency
-            mid = (low + high) // 2  # Midpoint in sorted possible values
+    # Compute max difference for normalization
+    maxDifference = self.annotationMaxDifferences[activity]
+    
+    # If maxDifference is zero, return (all values are identical)
+    if maxDifference == 0.0:
+        return 0 
 
-            #if no possible values are left or all cases are already at the same value
-            if len(possible_values) or len(case_ids) == 0:
-                break
-            candidate_durations = np.random.choice(possible_values[:mid+1], size=len(case_ids), replace=True)
+    # **Compute Initial T-Value (before adjustment)**
+    t_value_before = wasserstein_distance(self.__annotationDataOverAll[activity], original_durations) / maxDifference
 
-            # Compute Wasserstein Distance after modification
-            wasserstein_after = wasserstein_distance(self.__annotationDataOverAll[activity], candidate_durations)
-            t_value = wasserstein_after / maxDifference
+    low, high = 0, len(possible_values) - 1
+    candidate_replacements = []  # Store valid replacements
 
-            if t_value < t_threshold:
-                # Store valid replacement with its Wasserstein Distance
-                candidate_replacements.append((candidate_durations.copy(), wasserstein_after))
-                low = mid + 1  # Try using more values
-            else:
-                high = mid - 1  # Try using fewer values
+    # **Binary search to find the best valid replacement**
+    for _ in range(50):  # Limit to 50 iterations for efficiency
+        mid = (low + high) // 2  # Midpoint in sorted possible values
 
-        # **Find the best candidate that minimizes Wasserstein Distance change**
-        if candidate_replacements:
-            best_replacement, best_wasserstein_diff = min(
-                candidate_replacements,
-                key=lambda x: x[1]  # Select the one with the lowest Wasserstein Distance
-            )
+        # If no possible values are left or all cases are already at the same value
+        if len(possible_values) == 0 or len(case_ids) == 0:
+            break
+
+        candidate_durations = np.random.choice(possible_values[:mid+1], size=len(case_ids), replace=True)
+
+        # Compute T-Value after modification
+        t_value_after = wasserstein_distance(self.__annotationDataOverAll[activity], candidate_durations) / maxDifference
+
+        if t_value_after < t_threshold:
+            # Store valid replacement with T-Value
+            candidate_replacements.append((candidate_durations.copy(), t_value_after))
+            low = mid + 1  # Try using more values
         else:
-            best_replacement = original_durations.copy()  # Default: no changes
-            best_wasserstein_diff = wasserstein_before  # No change in Wasserstein Distance
+            high = mid - 1  # Try using fewer values
 
-        # **Log the changes per node**
-        self.t_closeness_adjustments.append({
-            "Activity": activity,
-            "Wasserstein Distance Before": wasserstein_before,
-            "Wasserstein Distance After": best_wasserstein_diff,
-            "Original Durations": original_durations.tolist(),
-            "Modified Durations": best_replacement.tolist(),
-            "Cases Affected": len(case_ids)
-        })
+    # **If valid replacements were found, apply the best one**
+    if candidate_replacements:
+        best_replacement, best_t_value_after = min(
+            candidate_replacements,
+            key=lambda x: abs(x[1] - t_value_before)  # Select the one with the minimal change
+        )
 
-        # **Apply the best found durations to the node**
-        node.annotations = {case: new_duration for case, new_duration in zip(case_ids, best_replacement)}
+        # Compute T-Value difference
+        t_value_difference = best_t_value_after - t_value_before
+
+        # Count how many annotations were changed
+        changes_made = sum(
+            1 for original, new in zip(original_durations, best_replacement) if original != new
+        )
+
+        # **Only log and apply changes if at least one annotation was modified**
+        if changes_made > 0:
+            self.t_closeness_adjustments.append({
+                "Activity": activity,
+                "T-Value Before": t_value_before,
+                "T-Value After": best_t_value_after,
+                "T-Value Difference": t_value_difference,  # How much it diverged from the original
+                "Original Durations": original_durations,
+                "Modified Durations": best_replacement.tolist(),
+                "Cases Affected": len(case_ids),
+                "Changes Made": changes_made  # Store the number of changes
+            })
+
+            # **Apply the best found durations to the node**
+            node.annotations = {case: new_duration for case, new_duration in zip(case_ids, best_replacement)}
+
+            return 1  # Modification was made
+
+    return 0  # No modification was made
+
         
     def _save_tcloseness_logs_json(self):
         """ Saves the T-Closeness adjustment logs to a JSON file. """
@@ -271,8 +303,7 @@ class Pretsa_binary:
         for node in PreOrderIter(self._tree):
             if node != self._tree:  # Avoid processing root node
                 if self._violatesTCloseness(node.name, node.annotations, t, node.cases):
-                    self._binary_search_adjust(node, t_threshold= t)
-                    modified_nodes += 1
+                    if self._binary_search_adjust(node, t_threshold= t): modified_nodes += 1
 
         print(f"T-Closeness adjustments applied to {modified_nodes} nodes.")
 
