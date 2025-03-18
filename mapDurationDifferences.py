@@ -3,7 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-def generate_heatmap(dataset_name):
+def generate_heatmap(dataset_name, option = "default"):
     """
     Generates a heatmap of relative duration errors grouped by k-values and t-values.
 
@@ -12,7 +12,10 @@ def generate_heatmap(dataset_name):
     """
 
     # Define file path
-    error_file = Path(f"/content/PRETSA/error_logs/{dataset_name}_duration_errors.csv")
+    if option == "default":
+        error_file = Path(f"/content/PRETSA/error_logs/{dataset_name}_duration_errors.csv")
+    elif option == "binary":
+        error_file = Path(f"/content/PRETSA/binary_error_logs/{dataset_name}_duration_errors.csv")
 
     # Load the error log
     if not error_file.exists():
