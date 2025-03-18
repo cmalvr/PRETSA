@@ -223,10 +223,8 @@ class Pretsa_binary:
             
 
             # If no possible values are left or all cases are already at the same value
-            if len(possible_values) == 0 or len(case_ids) == 0:
+            if len(possible_values) == 0 or len(case_ids) == 0 or len(possible_values[:mid+1]) == 0:
                 break
-            
-            print(f"WHAT? :{possible_values[:mid+1]}")
 
             candidate_durations = np.random.choice(possible_values[:mid+1], size=len(case_ids), replace=True)
 
