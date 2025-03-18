@@ -1,42 +1,86 @@
+import os
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+import re
+from pathlib import Path
 
-def calculate_duration_differences(original_file, sanitized_file):
-    """
-    Reads two CSV files (original and sanitized event logs), matches records by Activity and Case ID,
-    and computes the absolute relative error between their durations.
-    """
-    # Load the CSV files
-    original_df = pd.read_csv(original_file, delimiter=';')
-    sanitized_df = pd.read_csv(sanitized_file, delimiter=';')
-    
-    # Ensure proper column names
-    common_columns = ['Activity', 'Case ID', 'Duration']
-    original_df = original_df[common_columns]
-    sanitized_df = sanitized_df[common_columns]
-    
-    # Merge data on Activity and Case ID
-    merged_df = original_df.merge(sanitized_df, on=['Activity', 'Case ID'], how='left', suffixes=('_orig', '_san'))
+def extract_t_k_values(filename):
+    """Extracts t and k values from filenames like 'CoSeLoG_t0.1_k16_pretsa.csv'."""
+    match = re.search(r"_t([\d\.]+)_k(\d+)_pretsa\.csv", filename)
+    if match:
+        t_value = float(match.group(1))
+        k_value = int(match.group(2))
+        return t_value, k_value
+    return None, None
 
-    # Fill missing durations in sanitized log with 0 (indicating removed activity)
-    merged_df['Duration_san'] = merged_df['Duration_san'].fillna(0)
-    
-    # Compute absolute relative error
-    merged_df['Relative Error'] = np.abs((merged_df['Duration_san'] - merged_df['Duration_orig']) / (merged_df['Duration_orig'] + 1e-6))
-    
-    return merged_df[['Activity', 'Case ID', 'Relative Error']]
+def find_matching_files(dataset_name):
+    """Finds matching original (sanitized) and processed (original) files based on t and k values."""
+    original_dir = "/content/PRETSA/original_annotation/"
+    sanitized_dir = "/content/PRETSA/pretsalog/"
 
-def generate_heatmap(error_df, dataset_name):
-    """
-    Generates a heatmap of relative duration errors grouped by k-values and t-values.
-    """
-    pivot_table = error_df.pivot_table(values='Relative Error', index='t-value', columns='k-value', aggfunc='mean')
+    # List files in directories
+    original_files = [f for f in os.listdir(original_dir) if dataset_name in f]
+    sanitized_files = [f for f in os.listdir(sanitized_dir) if dataset_name in f]
+
+    # Match files by extracting t and k values
+    matches = []
+    for sanitized_file in sanitized_files:
+        t, k = extract_t_k_values(sanitized_file)
+        if t is not None and k is not None:
+            for original_file in original_files:
+                if original_file.startswith(f"{dataset_name}_duration"):
+                    matches.append((os.path.join(original_dir, original_file), 
+                                    os.path.join(sanitized_dir, sanitized_file),
+                                    t, k))
+    return matches
+
+def calculate_duration_differences(dataset_name):
+    """Calculates duration differences for all matched files of a dataset."""
+    matches = find_matching_files(dataset_name)
+    if not matches:
+        print(f"No matching files found for dataset: {dataset_name}")
+        return None
     
-    plt.figure(figsize=(8, 5))
-    sns.heatmap(pivot_table, cmap='hot_r', annot=True, fmt=".2f", linewidths=0.5)
-    plt.xlabel('k-value')
-    plt.ylabel('t-value')
-    plt.title(f'Relative Error Heatmap ({dataset_name})')
-    plt.show()
+    print(matches)
+
+    error_logs = []
+
+    for original_file, sanitized_file, t, k in matches:
+        print(f"Processing {original_file} and {sanitized_file} for t={t}, k={k}")
+
+        # Load CSV files
+        original_df = pd.read_csv(original_file, delimiter=";")
+        sanitized_df = pd.read_csv(sanitized_file, delimiter=";")
+
+        # Merge data on Activity and Case ID
+        merged_df = original_df.merge(sanitized_df, on=['Activity', 'Case ID'], how='left', suffixes=('_orig', '_san'))
+
+        # Ensure missing durations in sanitized dataset are set to zero
+        merged_df['Duration_san'] = merged_df['Duration_san'].fillna(0)
+
+        # Compute relative error
+        merged_df['Relative Error'] = merged_df.apply(
+            lambda row: abs((row['Duration_san'] / row['Duration_orig']) - 1.0) if row['Duration_orig'] != 0 else 0,
+            axis=1
+        )
+
+        # Add t and k values for grouping
+        merged_df['t-value'] = t
+        merged_df['k-value'] = k
+
+        # Store results
+        error_logs.append(merged_df[['Activity', 'Case ID', 'Duration_orig', 'Duration_san', 'Relative Error', 't-value', 'k-value']])
+
+    # Concatenate all logs
+    if error_logs:
+        final_df = pd.concat(error_logs, ignore_index=True)
+
+        # Save results
+        output_dir = Path("/content/PRETSA/error_logs/")
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_path = output_dir / f"{dataset_name}_duration_errors.csv"
+        final_df.to_csv(output_path, sep=";", index=False)
+
+        print(f"Saved error log: {output_path}")
+        return final_df
+
+    return None
