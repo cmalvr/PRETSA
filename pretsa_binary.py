@@ -241,7 +241,7 @@ class Pretsa_binary:
         
     def _save_tcloseness_logs_json(self):
         """ Saves the T-Closeness adjustment logs to a JSON file. """
-        log_path = Path(f"/content/PRETSA/t-closeness/_k{self.__k}_t{self.__t}_closeness_logs.json")
+        log_path = Path(f"/content/PRETSA/t-closeness/{self.__dataset}_k{self.__k}_t{self.__t}_closeness_logs.json")
         log_path.parent.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
 
         with open(log_path, "w") as file:
